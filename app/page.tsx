@@ -1,6 +1,9 @@
+
 import AppShell from "@/components/layout/AppShell";
 import DashboardStats from "@/components/dashboard/DashboardStats";
 import RecentActivities from "@/components/dashboard/RecentActivities";
+import InventoryOverview from "@/components/dashboard/InventoryOverview";
+import DocumentationOverview from "@/components/dashboard/DocumentationOverview";
 
 export default function DashboardPage() {
   return (
@@ -22,11 +25,17 @@ export default function DashboardPage() {
           </p>
         </section>
 
-        {/* Statistics */}
+        {/* Dashboard Statistics */}
         <DashboardStats />
 
+        {/* Inventory and Documentation Overview */}
+        <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <InventoryOverview />
+          <DocumentationOverview />
+        </section>
+
         {/* Recent Activities */}
-        <section className="grid grid-cols-1 gap-6">
+        <section>
           <RecentActivities />
         </section>
       </div>
