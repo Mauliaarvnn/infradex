@@ -1,35 +1,7 @@
+
 import { Clock3 } from "lucide-react";
 
-const activities = [
-  {
-    title: "Perangkat baru ditambahkan",
-    detail: "Router MikroTik RB4011 - Kantor Cabang Medan",
-    user: "Administrator",
-    time: "10 menit lalu",
-    color: "bg-blue-500",
-  },
-  {
-    title: "Dokumentasi rak diperbarui",
-    detail: "Rack Server Lantai 2 - Kantor Cabang Binjai",
-    user: "Administrator",
-    time: "35 menit lalu",
-    color: "bg-emerald-500",
-  },
-  {
-    title: "Topologi jaringan diunggah",
-    detail: "Topologi LAN - Kantor Cabang Pematangsiantar",
-    user: "Administrator",
-    time: "1 jam lalu",
-    color: "bg-purple-500",
-  },
-  {
-    title: "Data kantor cabang diperbarui",
-    detail: "Kantor Cabang Medan",
-    user: "Administrator",
-    time: "2 jam lalu",
-    color: "bg-orange-500",
-  },
-];
+import { recentActivities } from "@/data/dashboard";
 
 export default function RecentActivities() {
   return (
@@ -49,14 +21,12 @@ export default function RecentActivities() {
       </div>
 
       <div className="divide-y divide-gray-100">
-        {activities.map((activity, index) => (
+        {recentActivities.map((activity) => (
           <div
-            key={index}
+            key={activity.id}
             className="flex gap-4 p-5 transition hover:bg-gray-50"
           >
-            <div
-              className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${activity.color}`}
-            />
+            <div className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500" />
 
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-gray-800">

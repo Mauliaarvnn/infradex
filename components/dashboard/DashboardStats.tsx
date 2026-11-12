@@ -1,3 +1,4 @@
+
 import {
   Building2,
   Server,
@@ -6,42 +7,26 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-const statistics = [
-  {
-    label: "Total Kantor Cabang",
-    value: "24",
-    description: "Cabang terdokumentasi",
-    icon: Building2,
-  },
-  {
-    label: "Total Perangkat",
-    value: "186",
-    description: "Perangkat terdaftar",
-    icon: Server,
-  },
-  {
-    label: "Dokumentasi Rak",
-    value: "32",
-    description: "Foto rak server",
-    icon: HardDrive,
-  },
-  {
-    label: "Topologi Jaringan",
-    value: "24",
-    description: "Dokumen topologi",
-    icon: Network,
-  },
-];
+import { dashboardStats } from "@/data/dashboard";
+
+const statisticIcons = {
+  branches: Building2,
+  devices: Server,
+  racks: HardDrive,
+  topologies: Network,
+};
 
 export default function DashboardStats() {
   return (
     <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-      {statistics.map((item) => {
-        const Icon = item.icon;
+      {dashboardStats.map((item) => {
+        const Icon = statisticIcons[
+          item.id as keyof typeof statisticIcons
+        ];
 
         return (
           <div
-            key={item.label}
+            key={item.id}
             className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
           >
             <div className="flex items-center justify-between">
