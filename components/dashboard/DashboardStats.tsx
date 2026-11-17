@@ -1,4 +1,6 @@
 
+"use client";
+
 import {
   Building2,
   Server,
@@ -8,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { dashboardStats } from "@/data/dashboard";
+import { useBranches } from "@/components/providers/BranchProvider";
 
 const statisticIcons = {
   branches: Building2,
@@ -17,12 +20,18 @@ const statisticIcons = {
 };
 
 export default function DashboardStats() {
+  const { branches } = useBranches();
+
   return (
     <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
       {dashboardStats.map((item) => {
-        const Icon = statisticIcons[
-          item.id as keyof typeof statisticIcons
-        ];
+        const Icon =
+          statisticIcons[item.id as keyof typeof statisticIcons];
+
+        const value =
+          item.id === "branches"
+            ? branches.length
+            : item.value;
 
         return (
           <div
@@ -45,7 +54,7 @@ export default function DashboardStats() {
             </p>
 
             <h3 className="mt-1 text-3xl font-bold text-gray-800">
-              {item.value}
+              {value}
             </h3>
 
             <p className="mt-2 text-xs text-gray-400">

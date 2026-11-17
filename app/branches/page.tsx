@@ -9,7 +9,7 @@ import BranchStats from "@/components/branches/BranchStats";
 import BranchTable from "@/components/branches/BranchTable";
 import BranchForm from "@/components/branches/BranchForm";
 
-import { dummyBranches } from "@/data/branches";
+import { useBranches } from "@/components/providers/BranchProvider";
 import type { Branch } from "@/types/branch";
 
 type BranchFormData = Omit<
@@ -18,7 +18,7 @@ type BranchFormData = Omit<
 >;
 
 export default function BranchesPage() {
-  const [branches, setBranches] = useState<Branch[]>(dummyBranches);
+  const { branches, setBranches } = useBranches();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [newBranchCode, setNewBranchCode] = useState("");
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(
@@ -149,14 +149,17 @@ export default function BranchesPage() {
         {/* Form Tambah dan Edit Cabang */}
         {isFormOpen && (
         <BranchForm
-            key={selectedBranch?.id ?? "new"}
-            initialData={selectedBranch}
-            initialCode={newBranchCode}
-            onClose={() => {
+          key={selectedBranch?.id ?? "new"}
+          initialData={selectedBranch}
+          initialCode={newBranchCode}
+          availableCities={[
+            ...new Set(branches.map((branch) => branch.city)),
+          ]}
+          onClose={() => {
             setIsFormOpen(false);
             setSelectedBranch(null);
-            }}
-            onSubmit={handleSubmitBranch}
+          }}
+          onSubmit={handleSubmitBranch}
         />
         )}
       </div>

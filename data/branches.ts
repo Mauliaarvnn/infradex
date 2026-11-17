@@ -85,6 +85,7 @@ const branchSeeds: BranchSeed[] = [
   { code: "BR064", name: "KC Ombolata", city: "Gunungsitoli" },
 ];
 
+
 const documentationStatuses: Branch["documentationStatus"][] = [
   "complete",
   "incomplete",
@@ -94,18 +95,34 @@ const documentationStatuses: Branch["documentationStatus"][] = [
 export const dummyBranches: Branch[] = branchSeeds.map(
   (branch, index) => {
     const sequence = index + 1;
-    const date = `2026-01-${String((index % 28) + 1).padStart(2, "0")}`;
+
+    const date = `2026-01-${String(
+      (index % 28) + 1
+    ).padStart(2, "0")}`;
 
     return {
       id: branch.code.toLowerCase(),
       code: branch.code,
       name: branch.name,
       city: branch.city,
-      address: `Jl. Contoh Kawasan ${branch.name.replace("KC ", "")} No. ${sequence}`,
-      phone: `000-0000-${String(sequence).padStart(4, "0")}`,
+
+      // Alamat dummy dengan struktur terpisah
+      address: {
+        street: `Kawasan Contoh ${branch.name.replace("KC ", "")}`,
+        number: String(sequence),
+        village: "Kelurahan Contoh",
+        district: "Kecamatan Contoh",
+        postalCode: "00000",
+      },
+
+      // Nomor telepon dummy
+      phone: `0812000000${String(sequence).padStart(2, "0")}`,
+
       email: `branch${String(sequence).padStart(3, "0")}@example.invalid`,
+
       documentationStatus:
         documentationStatuses[index % documentationStatuses.length],
+
       createdAt: date,
       updatedAt: date,
     };

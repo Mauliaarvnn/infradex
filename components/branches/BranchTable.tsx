@@ -12,10 +12,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-import type {
-  Branch,
-  BranchCity,
-} from "@/types/branch";
+import type { Branch } from "@/types/branch";
 
 interface BranchTableProps {
   branches: Branch[];
@@ -23,18 +20,40 @@ interface BranchTableProps {
   onDelete: (branch: Branch) => void;
 }
 
-const cities: BranchCity[] = [
-  "Medan",
-  "Binjai",
-  "Pematangsiantar",
-  "Tebing Tinggi",
-  "Tanjungbalai",
-  "Sibolga",
-  "Padangsidimpuan",
-  "Gunungsitoli",
-];
-
 const PAGE_SIZE = 8;
+
+// Menyusun alamat menjadi satu format standar
+function formatAddress(branch: Branch) {
+  const { address, city } = branch;
+
+  const street = address.street
+    ? `Jl. ${address.street}`
+    : "";
+
+  const number = address.number
+    ? `No. ${address.number}`
+    : "";
+
+  const village = address.village
+    ? `Kel. ${address.village}`
+    : "";
+
+  const district = address.district
+    ? `Kec. ${address.district}`
+    : "";
+
+  const postalCode = address.postalCode || "";
+
+  return [
+    [street, number].filter(Boolean).join(" "),
+    village,
+    district,
+    city,
+    postalCode,
+  ]
+    .filter(Boolean)
+    .join(", ");
+}
 
 export default function BranchTable({
   branches,
@@ -45,11 +64,21 @@ export default function BranchTable({
   const [selectedCity, setSelectedCity] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Mengambil daftar kota secara otomatis dari data cabang
+  const cities = useMemo(() => {
+    return [...new Set(branches.map((branch) => branch.city))]
+      .sort((a, b) => a.localeCompare(b, "id"));
+  }, [branches]);
+
+  // Pencarian dan filter cabang
   const filteredBranches = useMemo(() => {
     return branches.filter((branch) => {
+      const keyword = searchQuery.toLowerCase();
+
       const matchesSearch =
-        branch.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        branch.code.toLowerCase().includes(searchQuery.toLowerCase());
+        branch.name.toLowerCase().includes(keyword) ||
+        branch.code.toLowerCase().includes(keyword) ||
+        branch.city.toLowerCase().includes(keyword);
 
       const matchesCity =
         selectedCity === "all" || branch.city === selectedCity;
@@ -58,6 +87,7 @@ export default function BranchTable({
     });
   }, [branches, searchQuery, selectedCity]);
 
+  // Pagination
   const totalPages = Math.max(
     1,
     Math.ceil(filteredBranches.length / PAGE_SIZE)
@@ -70,7 +100,10 @@ export default function BranchTable({
     safePage * PAGE_SIZE
   );
 
-  const getStatusLabel = (status: Branch["documentationStatus"]) => {
+  // Label status dokumentasi
+  const getStatusLabel = (
+    status: Branch["documentationStatus"]
+  ) => {
     switch (status) {
       case "complete":
         return "Lengkap";
@@ -81,7 +114,10 @@ export default function BranchTable({
     }
   };
 
-  const getStatusStyle = (status: Branch["documentationStatus"]) => {
+  // Warna status dokumentasi
+  const getStatusStyle = (
+    status: Branch["documentationStatus"]
+  ) => {
     switch (status) {
       case "complete":
         return "bg-green-50 text-green-700";
@@ -92,6 +128,7 @@ export default function BranchTable({
     }
   };
 
+  // Konfirmasi penghapusan
   const handleDelete = (branch: Branch) => {
     const confirmed = window.confirm(
       `Apakah kamu yakin ingin menghapus ${branch.name}?`
@@ -102,6 +139,7 @@ export default function BranchTable({
     }
   };
 
+  // Informasi jumlah data
   const startItem =
     filteredBranches.length === 0
       ? 0
@@ -114,6 +152,7 @@ export default function BranchTable({
 
   return (
     <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+
       {/* Header Tabel */}
       <div className="flex flex-col gap-4 border-b border-gray-200 p-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
@@ -127,6 +166,7 @@ export default function BranchTable({
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
+
           {/* Pencarian */}
           <div className="relative">
             <Search
@@ -136,13 +176,13 @@ export default function BranchTable({
 
             <input
               type="text"
-              placeholder="Cari nama atau kode cabang..."
+              placeholder="Cari nama, kode, atau kota..."
               value={searchQuery}
               onChange={(event) => {
                 setSearchQuery(event.target.value);
                 setCurrentPage(1);
               }}
-              aria-label="Cari nama atau kode cabang"
+              aria-label="Cari nama, kode, atau kota cabang"
               className="w-full rounded-lg border border-gray-200 py-2 pl-10 pr-4 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 sm:w-56"
             />
           </div>
@@ -170,13 +210,21 @@ export default function BranchTable({
 
       {/* Isi Tabel */}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[850px] text-left text-sm">
+        <table className="w-full min-w-[900px] text-left text-sm">
           <thead className="bg-gray-50 text-xs uppercase text-gray-500">
             <tr>
-              <th className="px-5 py-4 font-semibold">Kode Cabang</th>
-              <th className="px-5 py-4 font-semibold">Nama Cabang</th>
-              <th className="px-5 py-4 font-semibold">Kota</th>
-              <th className="px-5 py-4 font-semibold">Alamat</th>
+              <th className="px-5 py-4 font-semibold">
+                Kode Cabang
+              </th>
+              <th className="px-5 py-4 font-semibold">
+                Nama Cabang
+              </th>
+              <th className="px-5 py-4 font-semibold">
+                Kota
+              </th>
+              <th className="px-5 py-4 font-semibold">
+                Alamat
+              </th>
               <th className="px-5 py-4 font-semibold">
                 Status Dokumentasi
               </th>
@@ -205,8 +253,13 @@ export default function BranchTable({
                     {branch.city}
                   </td>
 
-                  <td className="max-w-xs truncate px-5 py-4 text-gray-500">
-                    {branch.address}
+                  <td
+                    className="max-w-sm px-5 py-4 text-gray-500"
+                    title={formatAddress(branch)}
+                  >
+                    <p className="line-clamp-2 min-w-[220px]">
+                      {formatAddress(branch)}
+                    </p>
                   </td>
 
                   <td className="whitespace-nowrap px-5 py-4">
@@ -219,6 +272,8 @@ export default function BranchTable({
 
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-center gap-2">
+
+                      {/* Detail */}
                       <Link
                         href={`/branches/${branch.id}`}
                         title="Lihat detail"
@@ -228,6 +283,7 @@ export default function BranchTable({
                         <Eye size={17} />
                       </Link>
 
+                      {/* Edit */}
                       <button
                         type="button"
                         title="Edit cabang"
@@ -238,6 +294,7 @@ export default function BranchTable({
                         <Pencil size={17} />
                       </button>
 
+                      {/* Hapus */}
                       <button
                         type="button"
                         title="Hapus cabang"
