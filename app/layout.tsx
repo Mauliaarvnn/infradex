@@ -1,5 +1,7 @@
+
 import { Geist, Geist_Mono } from "next/font/google";
 import { BranchProvider } from "@/components/providers/BranchProvider";
+import { DeviceProvider } from "@/components/providers/DeviceProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,7 +20,6 @@ export const metadata = {
     "Sistem dokumentasi infrastruktur jaringan dan server.",
 };
 
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <BranchProvider>
-          {children}
+          <DeviceProvider>
+            {children}
+          </DeviceProvider>
         </BranchProvider>
       </body>
     </html>

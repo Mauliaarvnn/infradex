@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
@@ -26,7 +26,7 @@ type BranchFormData = Omit<
   "id" | "createdAt" | "updatedAt"
 >;
 
-export default function BranchDetailPage() {
+function BranchDetailContent() {
   const params = useParams<{ id: string }>();
 
   const { branches, setBranches } = useBranches();
@@ -368,3 +368,18 @@ export default function BranchDetailPage() {
     </AppShell>
   );
 }
+
+export default function BranchDetailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="p-8 text-center text-sm text-gray-500">
+          Memuat detail cabang...
+        </div>
+      }
+    >
+      <BranchDetailContent />
+    </Suspense>
+  );
+}
+
