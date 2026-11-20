@@ -1,8 +1,11 @@
+
+import { Pencil } from "lucide-react";
 import type { Device } from "@/types/device";
 
 interface DeviceTableProps {
   devices: Device[];
   getBranchName: (branchId: string) => string;
+  onEdit: (device: Device) => void;
 }
 
 const categoryLabels: Record<string, string> = {
@@ -27,6 +30,7 @@ const statusLabels: Record<string, string> = {
 export default function DeviceTable({
   devices,
   getBranchName,
+  onEdit,
 }: DeviceTableProps) {
   return (
     <section className="overflow-hidden rounded-xl border border-gray-200 bg-white">
@@ -40,7 +44,7 @@ export default function DeviceTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[900px] text-left text-sm">
+        <table className="w-full min-w-[1000px] text-left text-sm">
           <thead className="bg-gray-50 text-xs uppercase text-gray-500">
             <tr>
               <th className="px-5 py-4 font-semibold">Kode Inventaris</th>
@@ -50,6 +54,7 @@ export default function DeviceTable({
               <th className="px-5 py-4 font-semibold">Cabang</th>
               <th className="px-5 py-4 font-semibold">Status</th>
               <th className="px-5 py-4 font-semibold">Kondisi</th>
+              <th className="px-5 py-4 text-center font-semibold">Aksi</th>
             </tr>
           </thead>
 
@@ -103,13 +108,25 @@ export default function DeviceTable({
                       ? "Rusak Ringan"
                       : "Rusak Berat"}
                 </td>
+
+                <td className="px-5 py-4 text-center">
+                  <button
+                    type="button"
+                    onClick={() => onEdit(device)}
+                    title={`Edit ${device.name}`}
+                    aria-label={`Edit ${device.name}`}
+                    className="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 transition hover:bg-emerald-50 hover:text-emerald-700"
+                  >
+                    <Pencil size={17} />
+                  </button>
+                </td>
               </tr>
             ))}
 
             {devices.length === 0 && (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={8}
                   className="px-5 py-12 text-center text-gray-500"
                 >
                   Belum ada data perangkat.
